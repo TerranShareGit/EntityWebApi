@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -14,7 +15,7 @@ namespace AnyEntityClient
 
         public WebApiHelper(string username, string password)
         {
-            client.BaseAddress = new Uri("http://localhost:7265/");
+            client.BaseAddress = new Uri(ConfigurationManager.AppSettings["SiteUrl"]);
 
             var token = GetTokenAsync(username, password).Result;
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
