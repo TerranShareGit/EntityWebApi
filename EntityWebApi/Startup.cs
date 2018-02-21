@@ -27,7 +27,7 @@ namespace EntityWebApi
             {
                 AllowInsecureHttp = true,
                 TokenEndpointPath = new PathString("/oauth/token"),
-                AccessTokenExpireTimeSpan = TimeSpan.FromDays(5),
+                AccessTokenExpireTimeSpan = TimeSpan.FromDays(15),
                 Provider = new AuthorizationServerProvider()
             };
             // Token Generation

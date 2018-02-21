@@ -1,13 +1,24 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using EntityWebApi.Models;
 using EntityWebApi.ViewModels;
+using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.Owin.Security.OAuth;
 
 namespace EntityWebApi.Providers
 {
     public class AuthorizationServerProvider : OAuthAuthorizationServerProvider
     {
+        private List<ApplicationUser> users = new List<ApplicationUser>()
+        {
+            new ApplicationUser() {UserName = "admin@mail.com", Password = "Admin-1", IsAdmin = true},
+            new ApplicationUser() {UserName = "user@mail.com", Password = "User-1"},
+            new ApplicationUser() {UserName = "user2@mail.com", Password = "User-2"},
+        };
+
         public override async Task ValidateClientAuthentication(OAuthValidateClientAuthenticationContext context)
         {
             await Task.FromResult(context.Validated());
@@ -35,12 +46,13 @@ namespace EntityWebApi.Providers
 
         private UserSessionModel Validate(string username, string password)
         {
-            if (username.Equals(password)) //реализация для отладки
+            ApplicationUser user = users.FirstOrDefault(u => u.UserName == username && u.Password == password);
+            if (user != null)
             {
                 return new UserSessionModel
                 {
                     UserId = Guid.NewGuid(),
-                    Roles = new[] { "User", "Admin" }
+                    Roles = user.IsAdmin ? new[] { "Admin" } : new[] { "User" }
                 };
             }
             return null;
